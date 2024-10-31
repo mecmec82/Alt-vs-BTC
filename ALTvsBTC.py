@@ -7,7 +7,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 def getDataCCXT(ID, start, end):
-    exchange = ccxt.binance()
+    exchange = ccxt.binanceus()
     data = exchange.fetch_ohlcv(ID, '1h')
     data = pd.DataFrame(data)
     data.columns = ["Date", "Open", "High", "Low", "Close", "Volume"]
@@ -28,9 +28,10 @@ SMA1 = 20
 NumPoints = 168
 
 # Altcoin list
-assets = ['ETH/BTC', 'SOL/BTC', 'SUI/BTC', 'AVAX/BTC', 'APT/BTC', 'NEAR/BTC', 'INJ/BTC',
-          'STX/BTC', 'DOGE/BTC', 'IMX/BTC', 'RNDR/BTC', 'FET/BTC', 'SUPER/BTC', 'HNT/BTC',
-          'SEI/BTC']
+assets = ['ETH/BTC', 'SOL/BTC']
+#assets = ['ETH/BTC', 'SOL/BTC', 'SUI/BTC', 'AVAX/BTC', 'APT/BTC', 'NEAR/BTC', 'INJ/BTC',
+#          'STX/BTC', 'DOGE/BTC', 'IMX/BTC', 'RNDR/BTC', 'FET/BTC', 'SUPER/BTC', 'HNT/BTC',
+#         'SEI/BTC']
 
 # Get alt data
 closeData = pd.DataFrame()
