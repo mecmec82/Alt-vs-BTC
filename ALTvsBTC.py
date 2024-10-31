@@ -33,7 +33,7 @@ SMA1=20
 NumPoints = 168
 
 # altcoin list
-assets=['ETH/BTC','SOL/BTC']
+assets=['ETH/USD','SOL/USD','SUI/USD','AVAX/USD']
 
 #assets=['ETH/BTC','SOL/BTC','SUI/BTC','AVAX/BTC','APT/BTC','NEAR/BTC','INJ/BTC',
 #        'STX/BTC','DOGE/BTC','IMX/BTC','RNDR/BTC','FET/BTC','SUPER/BTC','HNT/BTC',
