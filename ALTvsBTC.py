@@ -39,15 +39,26 @@ assets=['ETH/BTC','SOL/BTC']
 #        'STX/BTC','DOGE/BTC','IMX/BTC','RNDR/BTC','FET/BTC','SUPER/BTC','HNT/BTC',
 #       'SEI/BTC']
 
-print('running...')
+#get BTC data
+try:
+    btcData=getDataCCXT("BTC/USD",start,end)['Close']
+except:
+    st.write("failed to retrieve BTC data")
+
 
 #get alt data
 closeData=pd.DataFrame()
 for asset in assets:
+    assetName = str(asset).split("/")[0]
+    st.write(assetName)
     try:
-        closeData[asset]=getDataCCXT(asset,start,end)['Close']
+        closeData[assetName]=getDataCCXT(asset,start,end)['Close']
     except:
         st.write("failed to retrieve data for ticker: ",asset)
+
+# reference to BTC
+closeData = closeData.div(btcData, axis=0)
+
 
 # create SMA dataframe
 rollingAverageData = closeData.rolling(window=SMA1).mean()
