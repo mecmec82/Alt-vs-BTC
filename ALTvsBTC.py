@@ -33,11 +33,11 @@ SMA1=20
 NumPoints = 168
 
 # altcoin list
-assets=['ETH/USD','SOL/USD','SUI/USD','AVAX/USD']
+#assets=['ETH/USD','SOL/USD','SUI/USD','AVAX/USD']
 
-#assets=['ETH/BTC','SOL/BTC','SUI/BTC','AVAX/BTC','APT/BTC','NEAR/BTC','INJ/BTC',
-#        'STX/BTC','DOGE/BTC','IMX/BTC','RNDR/BTC','FET/BTC','SUPER/BTC','HNT/BTC',
-#       'SEI/BTC']
+assets=['ETH/USD','SOL/USD','SUI/USD','AVAX/USD','APT/USD','NEAR/USD','INJ/USD',
+        'STX/USD','DOGE/USD','IMX/USD','RNDR/USD','FET/USD','SUPER/USD','HNT/USD',
+       'SEI/USD']
 
 #get BTC data
 try:
