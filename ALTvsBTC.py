@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 def getDataCCXT(ID,start,end):
-    exchange = ccxt.binanceus()
+    exchange = ccxt.coinbase()
     data = exchange.fetch_ohlcv (ID, '1h') 
     data = pd.DataFrame(data)
     #data = pd.DataFrame(reversed_data)
