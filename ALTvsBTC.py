@@ -70,7 +70,7 @@ rollingAverageData = rollingAverageData[-NumPoints:]
 
 # Plots
 numAssets=len(closeData.columns)
-numRows=int(numAssets/2)+1
+numRows=int(numAssets/2)
 
 fig, axes = plt.subplots(numRows, 2, figsize=(10, 10),sharex=True)
 fig.subplots_adjust(wspace=0.3,hspace=0)
