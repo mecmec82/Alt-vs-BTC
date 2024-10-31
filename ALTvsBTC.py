@@ -1,3 +1,4 @@
+import streamlit as st
 import pandas as pd
 from datetime import datetime, timedelta
 import numpy as np
@@ -16,6 +17,8 @@ def getDataCCXT(ID,start,end):
     data.set_index('Date', drop=False, inplace=True)
     return data
 
+st.write('fetching data...')
+
 data=np.nan
 
 ##set up start and finish window
@@ -31,6 +34,7 @@ NumPoints = 168
 
 # altcoin list
 assets=['ETH/BTC','SOL/BTC']
+
 #assets=['ETH/BTC','SOL/BTC','SUI/BTC','AVAX/BTC','APT/BTC','NEAR/BTC','INJ/BTC',
 #        'STX/BTC','DOGE/BTC','IMX/BTC','RNDR/BTC','FET/BTC','SUPER/BTC','HNT/BTC',
 #       'SEI/BTC']
@@ -40,13 +44,10 @@ print('running...')
 #get alt data
 closeData=pd.DataFrame()
 for asset in assets:
-    print(asset)
     try:
         closeData[asset]=getDataCCXT(asset,start,end)['Close']
     except:
-        print("failed to retrieve data for ticker: ",asset)
-        
-print(closeData)
+        st.write("failed to retrieve data for ticker: ",asset)
 
 # create SMA dataframe
 rollingAverageData = closeData.rolling(window=SMA1).mean()
@@ -79,6 +80,6 @@ for index, asset in enumerate(closeData.columns):
         #ax1.tick_params(axis='x', rotation=90)
 
 fig.autofmt_xdate(rotation=90)
-plt.show()
 
-print('done')
+st.pyplot(fig)
+
