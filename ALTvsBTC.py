@@ -50,7 +50,7 @@ except:
 closeData=pd.DataFrame()
 for asset in assets:
     assetName = str(asset).split("/")[0]
-    st.write(assetName)
+    #st.write(assetName)
     try:
         closeData[assetName]=getDataCCXT(asset,start,end)['Close']
     except:
