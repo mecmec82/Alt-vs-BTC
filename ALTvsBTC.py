@@ -92,5 +92,8 @@ for index, asset in enumerate(closeData.columns):
 
 fig.autofmt_xdate(rotation=90)
 
+#clear text before charts
+st.empty()
+
 st.pyplot(fig)
 
