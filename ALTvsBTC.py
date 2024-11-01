@@ -8,7 +8,7 @@ import seaborn as sns
 
 def getDataCCXT(ID,start,end):
     exchange = ccxt.coinbase()
-    data = exchange.fetch_ohlcv (ID, '1d') 
+    data = exchange.fetch_ohlcv (ID, '2h') 
     data = pd.DataFrame(data)
     #data = pd.DataFrame(reversed_data)
     data.columns= ["Date","Open","High","Low","Close","Volume"]
@@ -31,7 +31,7 @@ start=start.strftime("%Y-%m-%d %H:%M:%S")
 # set 
 SMA1=10
 SMA2=30
-NumPoints = 90
+NumPoints = 300
 
 # altcoin list
 #assets=['ETH/USD','SOL/USD','SUI/USD','AVAX/USD']
