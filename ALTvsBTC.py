@@ -76,8 +76,7 @@ numAssets = len(closeData.columns)
 #numRows = round((numAssets / 2) + 0.01)
 numRows = numAssets 
 
-fig, axes = plt.subplots(numRows, figsize=(800*px, 400*px), sharex=True)
-#fig, axes = plt.subplots(numRows, figsize=(10, 15), sharex=True)
+fig, axes = plt.subplots(numRows, figsize=(10, 15), sharex=True)
 
 fig.subplots_adjust(wspace=0.3, hspace=0)
 fig.suptitle('altcoins vs BTC')
