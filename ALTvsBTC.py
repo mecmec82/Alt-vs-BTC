@@ -104,6 +104,12 @@ for index, asset in enumerate(closeData.columns):
     #    ax1.fill_between(x, y1, y2, where=(y1 <= y2), color='red', alpha=0.2, interpolate=True)
 
 fig.autofmt_xdate(rotation=90)
-plt.show()
+#plt.show()
 
-st.pyplot(fig)
+#st.pyplot(fig)
+
+# Adjusting size
+fig.update_layout(width=800, height=600)
+
+# Displaying in Streamlit
+st.pyplot(fig, use_container_width=False)
