@@ -66,7 +66,7 @@ rollingAverageData1 = closeData.rolling(window=SMA1).mean()
 rollingAverageData2 = closeData.rolling(window=SMA2).mean()
 
 # trim to desired timeframe
-closeData = closeData[-NumPoints:]
+#closeData = closeData[-NumPoints:]
 #rollingAverageData1 = rollingAverageData1[-NumPoints:]
 #rollingAverageData2 = rollingAverageData2[-NumPoints:]
 
