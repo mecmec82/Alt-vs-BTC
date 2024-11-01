@@ -75,7 +75,7 @@ rollingAverageData2 = closeData.rolling(window=SMA2).mean()
 numAssets = len(closeData.columns)
 numRows = round((numAssets / 2) + 0.01)
 
-fig, axes = plt.subplots(numRows, 2, figsize=(10, 10), sharex=True)
+fig, axes = plt.subplots(numRows, 1, figsize=(10, 10), sharex=True)
 fig.subplots_adjust(wspace=0.3, hspace=0)
 fig.suptitle('altcoins vs BTC')
 
