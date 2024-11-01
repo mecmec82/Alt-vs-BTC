@@ -83,13 +83,13 @@ fig.suptitle('altcoins vs BTC')
 
 for index, asset in enumerate(closeData.columns):
 
-    x = closeData.index
-    y1 = closeData[asset]
-    y2 = rollingAverageData1[asset]
+    x = rollingAverageData1.index
+    y1 = rollingAverageData1[asset]
+    y2 = rollingAverageData2[asset]
 
     #if index < numRows:
-    ax = sns.lineplot(ax=axes[index], data=closeData, x='Date', y=asset, color="blue")
-    ax = sns.lineplot(ax=axes[index], data=rollingAverageData1, x='Date', y=asset, color="orange")
+    ax = sns.lineplot(ax=axes[index], data=rollingAverageData1, x='Date', y=asset, color="blue")
+    ax = sns.lineplot(ax=axes[index], data=rollingAverageData2, x='Date', y=asset, color="orange")
     ax.fill_between(x, y1, y2, where=(y1 > y2), color='green', alpha=0.2, interpolate=True)
     ax.fill_between(x, y1, y2, where=(y1 <= y2), color='red', alpha=0.2, interpolate=True)
 
