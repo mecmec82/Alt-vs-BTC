@@ -75,7 +75,7 @@ rollingAverageData2 = closeData.rolling(window=SMA2).mean()
 numAssets = len(closeData.columns)
 numRows = round((numAssets / 2) + 0.01)
 
-fig, axes = plt.subplots(numRows, 2, figsize=(15, 10), sharex=True)
+fig, axes = plt.subplots(numRows, 2, figsize=(10, 10), sharex=True)
 fig.subplots_adjust(wspace=0.3, hspace=0)
 fig.suptitle('altcoins vs BTC')
 
@@ -85,21 +85,17 @@ for index, asset in enumerate(closeData.columns):
     y1 = closeData[asset]
     y2 = rollingAverageData1[asset]
 
-    if index < numRows:
-        ax = sns.lineplot(ax=axes[index, 0], data=closeData, x='Date', y=asset, color="blue")
-        ax = sns.lineplot(ax=axes[index, 0], data=rollingAverageData1, x='Date', y=asset, color="orange")
+    #if index < numRows:
+    ax = sns.lineplot(ax=axes[index, 0], data=closeData, x='Date', y=asset, color="blue")
+    ax = sns.lineplot(ax=axes[index, 0], data=rollingAverageData1, x='Date', y=asset, color="orange")
+    ax.fill_between(x, y1, y2, where=(y1 > y2), color='green', alpha=0.2, interpolate=True)
+    ax.fill_between(x, y1, y2, where=(y1 <= y2), color='red', alpha=0.2, interpolate=True)
         
-        ax.fill_between(x, y1, y2, where=(y1 > y2), color='green', alpha=0.2, interpolate=True)
-        ax.fill_between(x, y1, y2, where=(y1 <= y2), color='red', alpha=0.2, interpolate=True)
-        
-    else:
-        ax1 = sns.lineplot(ax=axes[index - numRows, 1], data=closeData, x='Date', y=asset, color="blue")
-        ax1 = sns.lineplot(ax=axes[index - numRows, 1], data=rollingAverageData1, x='Date', y=asset, color="orange")
-        
-
-        
-        ax1.fill_between(x, y1, y2, where=(y1 > y2), color='green', alpha=0.2, interpolate=True)
-        ax1.fill_between(x, y1, y2, where=(y1 <= y2), color='red', alpha=0.2, interpolate=True)
+    #else:
+    #    ax1 = sns.lineplot(ax=axes[index - numRows, 1], data=closeData, x='Date', y=asset, color="blue")
+    #    ax1 = sns.lineplot(ax=axes[index - numRows, 1], data=rollingAverageData1, x='Date', y=asset, color="orange")
+    #    ax1.fill_between(x, y1, y2, where=(y1 > y2), color='green', alpha=0.2, interpolate=True)
+    #    ax1.fill_between(x, y1, y2, where=(y1 <= y2), color='red', alpha=0.2, interpolate=True)
 
 fig.autofmt_xdate(rotation=90)
 plt.show()
