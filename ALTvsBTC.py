@@ -31,7 +31,7 @@ start=start.strftime("%Y-%m-%d %H:%M:%S")
 # set 
 SMA1=10
 SMA2=30
-NumPoints = 30
+NumPoints = 90
 
 # altcoin list
 #assets=['ETH/USD','SOL/USD','SUI/USD','AVAX/USD']
@@ -76,7 +76,7 @@ numAssets = len(closeData.columns)
 #numRows = round((numAssets / 2) + 0.01)
 numRows = numAssets 
 
-fig, axes = plt.subplots(numRows, figsize=(10,20), sharex=True)
+fig, axes = plt.subplots(numRows, figsize=(8,20), sharex=True)
 
 fig.subplots_adjust(wspace=0.3, hspace=0)
 fig.suptitle('altcoins vs BTC')
