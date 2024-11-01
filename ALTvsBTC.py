@@ -87,14 +87,14 @@ for index, asset in enumerate(closeData.columns):
 
     if index < numRows:
         ax = sns.lineplot(ax=axes[index, 0], data=closeData, x='Date', y=asset, color="blue")
-        ax = sns.lineplot(ax=axes[index, 0], data=rollingAverageData, x='Date', y=asset, color="orange")
+        ax = sns.lineplot(ax=axes[index, 0], data=rollingAverageData1, x='Date', y=asset, color="orange")
         
         ax.fill_between(x, y1, y2, where=(y1 > y2), color='green', alpha=0.2, interpolate=True)
         ax.fill_between(x, y1, y2, where=(y1 <= y2), color='red', alpha=0.2, interpolate=True)
         
     else:
         ax1 = sns.lineplot(ax=axes[index - numRows, 1], data=closeData, x='Date', y=asset, color="blue")
-        ax1 = sns.lineplot(ax=axes[index - numRows, 1], data=rollingAverageData, x='Date', y=asset, color="orange")
+        ax1 = sns.lineplot(ax=axes[index - numRows, 1], data=rollingAverageData1, x='Date', y=asset, color="orange")
         
 
         
