@@ -29,7 +29,8 @@ end=end.strftime("%Y-%m-%d %H:%M:%S")
 start=start.strftime("%Y-%m-%d %H:%M:%S")
 
 # set 
-SMA1=20
+SMA1=4
+SMA1=24
 NumPoints = 168
 
 # altcoin list
@@ -61,12 +62,13 @@ closeData = closeData.div(btcData, axis=0)
 
 
 # create SMA dataframe
-rollingAverageData = closeData.rolling(window=SMA1).mean()
+rollingAverageData1 = closeData.rolling(window=SMA1).mean()
+rollingAverageData2 = closeData.rolling(window=SMA2).mean()
 
 # trim to desired timeframe
 closeData = closeData[-NumPoints:]
-rollingAverageData = rollingAverageData[-NumPoints:]
-
+rollingAverageData1 = rollingAverageData1[-NumPoints:]
+rollingAverageData2 = rollingAverageData2[-NumPoints:]
 
 # Plots
 numAssets=len(closeData.columns)
@@ -77,17 +79,19 @@ fig.subplots_adjust(wspace=0.3,hspace=0)
 fig.suptitle('altcoins vs BTC')
 
 for index, asset in enumerate(closeData.columns):
-    if closeData[asset].iloc[-1]>rollingAverageData[asset].iloc[0]:
+    if rollingAverageData1[asset].iloc[-1]>rollingAverageData2[asset].iloc[0]:
         lineColor='green'
     else:
         lineColor='red'
     if index < numRows:
-        ax=sns.lineplot(ax=axes[index,0], data=closeData, x='Date', y=asset, color=lineColor)
-        ax=sns.lineplot(ax=axes[index,0], data=rollingAverageData, x='Date', y=asset, color="blue")
+        #ax=sns.lineplot(ax=axes[index,0], data=closeData, x='Date', y=asset, color=lineColor)
+        ax=sns.lineplot(ax=axes[index,0], data=rollingAverageData1, x='Date', y=asset, color=lineColor)
+        ax=sns.lineplot(ax=axes[index,0], data=rollingAverageData2, x='Date', y=asset, color="purple")
         #ax.tick_params(axis='x', rotation=90)
     else:
-        ax1=sns.lineplot(ax=axes[index-numRows,1], data=closeData, x='Date', y=asset, color=lineColor)
-        ax1=sns.lineplot(ax=axes[index-numRows,1], data=rollingAverageData, x='Date', y=asset, color="blue")
+        #ax1=sns.lineplot(ax=axes[index-numRows,1], data=closeData, x='Date', y=asset, color=lineColor)
+        ax1=sns.lineplot(ax=axes[index-numRows,1], data=rollingAverageData1, x='Date', y=asset, color=lineColor)
+        ax1=sns.lineplot(ax=axes[index-numRows,1], data=rollingAverageData2, x='Date', y=asset, color="purple")
         #ax1.tick_params(axis='x', rotation=90)
 
 fig.autofmt_xdate(rotation=90)
