@@ -67,8 +67,8 @@ rollingAverageData2 = closeData.rolling(window=SMA2).mean()
 
 # trim to desired timeframe
 closeData = closeData[-NumPoints:]
-rollingAverageData1 = rollingAverageData1[-NumPoints:]
-rollingAverageData2 = rollingAverageData2[-NumPoints:]
+#rollingAverageData1 = rollingAverageData1[-NumPoints:]
+#rollingAverageData2 = rollingAverageData2[-NumPoints:]
 
 # Plots
 numAssets=len(closeData.columns)
