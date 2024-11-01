@@ -34,11 +34,11 @@ SMA2=30
 NumPoints = 168
 
 # altcoin list
-#assets=['ETH/USD','SOL/USD','SUI/USD','AVAX/USD']
+assets=['ETH/USD','SOL/USD','SUI/USD','AVAX/USD']
 
-assets=['ETH/USD','SOL/USD','SUI/USD','AVAX/USD','APT/USD','NEAR/USD','INJ/USD',
-        'STX/USD','DOGE/USD','IMX/USD','RNDR/USD','FET/USD','SUPER/USD','HNT/USD',
-       'SEI/USD']
+#assets=['ETH/USD','SOL/USD','SUI/USD','AVAX/USD','APT/USD','NEAR/USD','INJ/USD',
+#        'STX/USD','DOGE/USD','IMX/USD','RNDR/USD','FET/USD','SUPER/USD','HNT/USD',
+#       'SEI/USD']
 
 #get BTC data
 try:
@@ -73,9 +73,10 @@ rollingAverageData2 = closeData.rolling(window=SMA2).mean()
 
 # Plots
 numAssets = len(closeData.columns)
-numRows = round((numAssets / 2) + 0.01)
+#numRows = round((numAssets / 2) + 0.01)
+numRows = numAssets 
 
-fig, axes = plt.subplots(numRows, 1, figsize=(10, 10), sharex=True)
+fig, axes = plt.subplots(numRows, figsize=(10, 10), sharex=True)
 fig.subplots_adjust(wspace=0.3, hspace=0)
 fig.suptitle('altcoins vs BTC')
 
@@ -86,8 +87,8 @@ for index, asset in enumerate(closeData.columns):
     y2 = rollingAverageData1[asset]
 
     #if index < numRows:
-    ax = sns.lineplot(ax=axes[index, 0], data=closeData, x='Date', y=asset, color="blue")
-    ax = sns.lineplot(ax=axes[index, 0], data=rollingAverageData1, x='Date', y=asset, color="orange")
+    ax = sns.lineplot(ax=axes[index], data=closeData, x='Date', y=asset, color="blue")
+    ax = sns.lineplot(ax=axes[index], data=rollingAverageData1, x='Date', y=asset, color="orange")
     ax.fill_between(x, y1, y2, where=(y1 > y2), color='green', alpha=0.2, interpolate=True)
     ax.fill_between(x, y1, y2, where=(y1 <= y2), color='red', alpha=0.2, interpolate=True)
         
@@ -100,9 +101,4 @@ for index, asset in enumerate(closeData.columns):
 fig.autofmt_xdate(rotation=90)
 plt.show()
 
-
-
-
-
 st.pyplot(fig)
-
