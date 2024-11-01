@@ -31,7 +31,7 @@ start=start.strftime("%Y-%m-%d %H:%M:%S")
 # set 
 SMA1=10
 SMA2=30
-NumPoints = 168
+NumPoints = 30
 
 # altcoin list
 #assets=['ETH/USD','SOL/USD','SUI/USD','AVAX/USD']
@@ -66,9 +66,9 @@ rollingAverageData1 = closeData.rolling(window=SMA1).mean()
 rollingAverageData2 = closeData.rolling(window=SMA2).mean()
 
 # trim to desired timeframe
-#closeData = closeData[-NumPoints:]
-#rollingAverageData1 = rollingAverageData1[-NumPoints:]
-#rollingAverageData2 = rollingAverageData2[-NumPoints:]
+closeData = closeData[-NumPoints:]
+rollingAverageData1 = rollingAverageData1[-NumPoints:]
+rollingAverageData2 = rollingAverageData2[-NumPoints:]
 
 
 # Plots
