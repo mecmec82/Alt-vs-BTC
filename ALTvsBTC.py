@@ -83,7 +83,7 @@ for index, asset in enumerate(closeData.columns):
 
     x = closeData.index
     y1 = closeData[asset]
-    y2 = rollingAverageData[asset]
+    y2 = rollingAverageData1[asset]
 
     if index < numRows:
         ax = sns.lineplot(ax=axes[index, 0], data=closeData, x='Date', y=asset, color=lineColor)
