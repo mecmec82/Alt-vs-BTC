@@ -91,6 +91,11 @@ for index, asset in enumerate(closeData.columns):
     ax = sns.lineplot(ax=axes[index], data=rollingAverageData1, x='Date', y=asset, color="orange")
     ax.fill_between(x, y1, y2, where=(y1 > y2), color='green', alpha=0.2, interpolate=True)
     ax.fill_between(x, y1, y2, where=(y1 <= y2), color='red', alpha=0.2, interpolate=True)
+
+    if closeData[asset][-1] > rollingAverageData1[asset][-1]:
+        ax.yaxis.label.set_color('green')          #setting up Y-axis label color to blue
+        ax.tick_params(axis='y', colors='green')  #setting up Y-axis tick color to black
+        ax.spines['left'].set_color('green')        # setting up Y-axis tick color to red
         
     #else:
     #    ax1 = sns.lineplot(ax=axes[index - numRows, 1], data=closeData, x='Date', y=asset, color="blue")
