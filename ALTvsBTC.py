@@ -93,7 +93,7 @@ for index, asset in enumerate(closeData.columns):
     ax.fill_between(x, y1, y2, where=(y1 > y2), color='green', alpha=0.2, interpolate=True)
     ax.fill_between(x, y1, y2, where=(y1 <= y2), color='red', alpha=0.2, interpolate=True)
 
-    if closeData[asset][-1] > rollingAverageData1[asset][-1]:
+    if rollingAverageData1[asset][-1] > rollingAverageData2[asset][-1]:
         ax.yaxis.label.set_color('green')          #setting up Y-axis label color to blue
         ax.tick_params(axis='y', colors='green')  #setting up Y-axis tick color to black
         ax.spines['left'].set_color('green')        # setting up Y-axis tick color to red
