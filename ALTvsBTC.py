@@ -70,34 +70,43 @@ closeData = closeData[-NumPoints:]
 #rollingAverageData1 = rollingAverageData1[-NumPoints:]
 #rollingAverageData2 = rollingAverageData2[-NumPoints:]
 
-# Plots
-numAssets=len(closeData.columns)
-numRows=round((numAssets/2)+0.1)
 
-fig, axes = plt.subplots(numRows, 2, figsize=(10, 10),sharex=True)
-fig.subplots_adjust(wspace=0.3,hspace=0)
+# Plots
+numAssets = len(closeData.columns)
+numRows = round((numAssets / 2) + 0.01)
+
+fig, axes = plt.subplots(numRows, 2, figsize=(15, 10), sharex=True)
+fig.subplots_adjust(wspace=0.3, hspace=0)
 fig.suptitle('altcoins vs BTC')
 
 for index, asset in enumerate(closeData.columns):
-    if rollingAverageData1[asset].iloc[-1]>rollingAverageData2[asset].iloc[0]:
-        lineColor='green'
-    else:
-        lineColor='red'
+
+    x = closeData.index
+    y1 = closeData[asset]
+    y2 = rollingAverageData[asset]
+
     if index < numRows:
-        #ax=sns.lineplot(ax=axes[index,0], data=closeData, x='Date', y=asset, color=lineColor)
-        ax=sns.lineplot(ax=axes[index,0], data=rollingAverageData1, x='Date', y=asset, color=lineColor)
-        ax=sns.lineplot(ax=axes[index,0], data=rollingAverageData2, x='Date', y=asset, color="purple")
-        #ax.tick_params(axis='x', rotation=90)
+        ax = sns.lineplot(ax=axes[index, 0], data=closeData, x='Date', y=asset, color=lineColor)
+        ax = sns.lineplot(ax=axes[index, 0], data=rollingAverageData, x='Date', y=asset, color="blue")
+        
+        ax.fill_between(x, y1, y2, where=(y1 > y2), color='green', alpha=0.2, interpolate=True)
+        ax.fill_between(x, y1, y2, where=(y1 <= y2), color='red', alpha=0.2, interpolate=True)
+        
     else:
-        #ax1=sns.lineplot(ax=axes[index-numRows,1], data=closeData, x='Date', y=asset, color=lineColor)
-        ax1=sns.lineplot(ax=axes[index-numRows,1], data=rollingAverageData1, x='Date', y=asset, color=lineColor)
-        ax1=sns.lineplot(ax=axes[index-numRows,1], data=rollingAverageData2, x='Date', y=asset, color="purple")
-        #ax1.tick_params(axis='x', rotation=90)
+        ax1 = sns.lineplot(ax=axes[index - numRows, 1], data=closeData, x='Date', y=asset, color=lineColor)
+        ax1 = sns.lineplot(ax=axes[index - numRows, 1], data=rollingAverageData, x='Date', y=asset, color="blue")
+        
+
+        
+        ax1.fill_between(x, y1, y2, where=(y1 > y2), color='green', alpha=0.2, interpolate=True)
+        ax1.fill_between(x, y1, y2, where=(y1 <= y2), color='red', alpha=0.2, interpolate=True)
 
 fig.autofmt_xdate(rotation=90)
+plt.show()
 
-#clear text before charts
-st.empty()
+
+
+
 
 st.pyplot(fig)
 
