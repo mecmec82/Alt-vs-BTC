@@ -30,7 +30,7 @@ start=start.strftime("%Y-%m-%d %H:%M:%S")
 
 # set 
 SMA1=4
-SMA1=24
+SMA2=24
 NumPoints = 168
 
 # altcoin list
