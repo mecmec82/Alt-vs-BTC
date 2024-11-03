@@ -6,6 +6,7 @@ import ccxt
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+@st.cache_data
 def getDataCCXT(ID, start, end):
     exchange = ccxt.coinbase()
     data = exchange.fetch_ohlcv(ID, '2h')
