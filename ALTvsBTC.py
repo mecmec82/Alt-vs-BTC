@@ -52,6 +52,12 @@ def plot_data(closeData, SMA1, SMA2, NumPoints):
     rollingAverageData1 = rollingAverageData1[-NumPoints:]
     rollingAverageData2 = rollingAverageData2[-NumPoints:]
 
+    # Calculate percentage increase over the time period
+    percentage_increase = (closeData.iloc[-1] - closeData.iloc[0]) / closeData.iloc[0] * 100
+
+    # Sort assets by percentage increase
+    sorted_assets = percentage_increase.sort_values(ascending=False).index
+
     # Plots
     numAssets = len(closeData.columns)
     numRows = numAssets
@@ -61,7 +67,7 @@ def plot_data(closeData, SMA1, SMA2, NumPoints):
     fig.subplots_adjust(wspace=0.1, hspace=0.5)
     fig.suptitle('Altcoins vs BTC', y=0.92)
 
-    for index, asset in enumerate(closeData.columns):
+    for index, asset in enumerate(sorted_assets):
         x = rollingAverageData1.index
         y1 = rollingAverageData1[asset]
         y2 = rollingAverageData2[asset]
@@ -91,9 +97,7 @@ assets = st.sidebar.multiselect('Select Assets',
                                 ['ETH/USD', 'SOL/USD', 'SUI/USD', 'AVAX/USD', 'APT/USD', 'NEAR/USD', 'INJ/USD',
                                  'STX/USD', 'DOGE/USD', 'IMX/USD', 'RNDR/USD', 'FET/USD', 'SUPER/USD', 'HNT/USD',
                                  'SEI/USD'], 
-                                default=['ETH/USD', 'SOL/USD', 'SUI/USD', 'AVAX/USD', 'APT/USD', 'NEAR/USD', 'INJ/USD',
-                                 'STX/USD', 'DOGE/USD', 'IMX/USD', 'RNDR/USD', 'FET/USD', 'SUPER/USD', 'HNT/USD',
-                                 'SEI/USD'])
+                                default=['ETH/USD', 'SOL/USD', 'SUI/USD', 'AVAX/USD'])
 
 if 'assets' not in st.session_state:
     st.session_state.assets = assets
