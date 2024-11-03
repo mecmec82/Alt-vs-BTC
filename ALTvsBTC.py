@@ -77,10 +77,19 @@ def plot_data(closeData, SMA1, SMA2, NumPoints):
         ax.fill_between(x, y1, y2, where=(y1 > y2), color='green', alpha=0.2, interpolate=True)
         ax.fill_between(x, y1, y2, where=(y1 <= y2), color='red', alpha=0.2, interpolate=True)
 
-        if rollingAverageData1[asset][-1] > rollingAverageData2[asset][-1]:
+        increase_percentage = percentage_increase[asset]
+        if increase_percentage > 0:
             ax.yaxis.label.set_color('green')
             ax.tick_params(axis='y', colors='green')
             ax.spines['left'].set_color('green')
+            ax.text(1.02, 0.5, f'{increase_percentage:.2f}%', transform=ax.transAxes,
+                    color='green', fontsize=12, verticalalignment='center')
+        else:
+            ax.yaxis.label.set_color('red')
+            ax.tick_params(axis='y', colors='red')
+            ax.spines['left'].set_color('red')
+            ax.text(1.02, 0.5, f'{increase_percentage:.2f}%', transform=ax.transAxes,
+                    color='red', fontsize=12, verticalalignment='center')
 
     fig.autofmt_xdate(rotation=90)
 
