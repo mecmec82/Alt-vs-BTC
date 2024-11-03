@@ -6,77 +6,88 @@ import ccxt
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-def get_data_ccxt(exchange, symbol, timeframe, start, end):
-    try:
-        data = exchange.fetch_ohlcv(symbol, timeframe, since=start, limit=1000)
-        df = pd.DataFrame(data, columns=["Date", "Open", "High", "Low", "Close", "Volume"])
-        df['Date'] = pd.to_datetime(df['Date'], unit='ms')
-        df.set_index('Date', inplace=True)
-        return df
-    except Exception as e:
-        st.write(f"Failed to retrieve data for {symbol}: {e}")
-        return pd.DataFrame()
-
-def fetch_data(assets, start, end):
+def getDataCCXT(ID, start, end):
     exchange = ccxt.coinbase()
-    btc_data = get_data_ccxt(exchange, "BTC/USD", '2h', start, end)['Close']
-    close_data = pd.DataFrame()
+    data = exchange.fetch_ohlcv(ID, '2h')
+    data = pd.DataFrame(data)
+    data.columns = ["Date", "Open", "High", "Low", "Close", "Volume"]
+    data = data.sort_values(by=['Date'], ascending=True)
+    data['Date'] = pd.to_datetime(data['Date'], unit='ms')
+    data.set_index('Date', drop=False, inplace=True)
+    return data
 
-    for asset in assets:
-        asset_name = asset.split("/")[0]
-        data = get_data_ccxt(exchange, asset, '2h', start, end)
-        if not data.empty:
-            close_data[asset_name] = data['Close']
-        else:
-            st.write(f"Failed to retrieve data for {asset}")
-
-    close_data = close_data.div(btc_data, axis=0)
-    return close_data
-
-def calculate_sma(data, window):
-    return data.rolling(window=window).mean()
-
-def plot_data(close_data, sma1, sma2, num_points):
-    close_data = close_data[-num_points:]
-    sma1_data = calculate_sma(close_data, SMA1)[-num_points:]
-    sma2_data = calculate_sma(close_data, SMA2)[-num_points:]
-
-    num_assets = len(close_data.columns)
-    fig, axes = plt.subplots(num_assets, figsize=(10, 20), sharex=True)
-    fig.subplots_adjust(wspace=0.3, hspace=0)
-    fig.suptitle('Altcoins vs BTC')
-
-    for index, asset in enumerate(close_data.columns):
-        x = sma1_data.index
-        y1 = sma1_data[asset]
-        y2 = sma2_data[asset]
-
-        ax = sns.lineplot(ax=axes[index], data=sma1_data, x='Date', y=asset, color="blue")
-        ax = sns.lineplot(ax=axes[index], data=sma2_data, x='Date', y=asset, color="orange")
-        ax.fill_between(x, y1, y2, where=(y1 > y2), color='green', alpha=0.2, interpolate=True)
-        ax.fill_between(x, y1, y2, where=(y1 <= y2), color='red', alpha=0.2, interpolate=True)
-
-        if y1.iloc[-1] > y2.iloc[-1]:
-            ax.yaxis.label.set_color('green')
-            ax.tick_params(axis='y', colors='green')
-            ax.spines['left'].set_color('green')
-
-    fig.autofmt_xdate(rotation=90)
-    st.pyplot(fig, use_container_width=False)
+# Sidebar controls
+st.sidebar.header('Settings')
+SMA1 = st.sidebar.slider('SMA1', min_value=1, max_value=50, value=10)
+SMA2 = st.sidebar.slider('SMA2', min_value=1, max_value=50, value=30)
+NumPoints = st.sidebar.slider('Number of Points', min_value=50, max_value=500, value=300)
+assets = st.sidebar.multiselect('Select Assets', 
+                                ['ETH/USD', 'SOL/USD', 'SUI/USD', 'AVAX/USD', 'APT/USD', 'NEAR/USD', 'INJ/USD',
+                                 'STX/USD', 'DOGE/USD', 'IMX/USD', 'RNDR/USD', 'FET/USD', 'SUPER/USD', 'HNT/USD',
+                                 'SEI/USD'], 
+                                default=['ETH/USD', 'SOL/USD', 'SUI/USD', 'AVAX/USD'])
 
 st.write('Fetching data...')
 
+data = np.nan
+
+# Set up start and finish window
 now = datetime.now()
-end = (now - timedelta(hours=0.5)).timestamp() * 1000
-start = (now - timedelta(hours=50)).timestamp() * 1000
+end = (now - timedelta(hours=0.5)).strftime("%Y-%m-%d %H:%M:%S")
+start = (now - timedelta(hours=50)).strftime("%Y-%m-%d %H:%M:%S")
 
-SMA1 = 10
-SMA2 = 30
-NumPoints = 300
+# Get BTC data
+try:
+    btcData = getDataCCXT("BTC/USD", start, end)['Close']
+except:
+    st.write("Failed to retrieve BTC data")
 
-assets = ['ETH/USD', 'SOL/USD', 'SUI/USD', 'AVAX/USD', 'APT/USD', 'NEAR/USD', 'INJ/USD',
-          'STX/USD', 'DOGE/USD', 'IMX/USD', 'RNDR/USD', 'FET/USD', 'SUPER/USD', 'HNT/USD',
-          'SEI/USD']
+# Get alt data
+closeData = pd.DataFrame()
+for asset in assets:
+    assetName = str(asset).split("/")[0]
+    try:
+        closeData[assetName] = getDataCCXT(asset, start, end)['Close']
+    except:
+        st.write("Failed to retrieve data for ticker: ", asset)
 
-close_data = fetch_data(assets, start, end)
-plot_data(close_data, SMA1, SMA2, NumPoints)
+# Reference to BTC
+closeData = closeData.div(btcData, axis=0)
+
+# Create SMA dataframe
+rollingAverageData1 = closeData.rolling(window=SMA1).mean()
+rollingAverageData2 = closeData.rolling(window=SMA2).mean()
+
+# Trim to desired timeframe
+closeData = closeData[-NumPoints:]
+rollingAverageData1 = rollingAverageData1[-NumPoints:]
+rollingAverageData2 = rollingAverageData2[-NumPoints:]
+
+# Plots
+numAssets = len(closeData.columns)
+numRows = numAssets
+
+fig, axes = plt.subplots(numRows, figsize=(3, 20), sharex=True)
+
+fig.subplots_adjust(wspace=0.3, hspace=0)
+fig.suptitle('Altcoins vs BTC')
+
+for index, asset in enumerate(closeData.columns):
+    x = rollingAverageData1.index
+    y1 = rollingAverageData1[asset]
+    y2 = rollingAverageData2[asset]
+
+    ax = sns.lineplot(ax=axes[index], data=rollingAverageData1, x='Date', y=asset, color="blue")
+    ax = sns.lineplot(ax=axes[index], data=rollingAverageData2, x='Date', y=asset, color="orange")
+    ax.fill_between(x, y1, y2, where=(y1 > y2), color='green', alpha=0.2, interpolate=True)
+    ax.fill_between(x, y1, y2, where=(y1 <= y2), color='red', alpha=0.2, interpolate=True)
+
+    if rollingAverageData1[asset][-1] > rollingAverageData2[asset][-1]:
+        ax.yaxis.label.set_color('green')
+        ax.tick_params(axis='y', colors='green')
+        ax.spines['left'].set_color('green')
+
+fig.autofmt_xdate(rotation=90)
+
+# Displaying in Streamlit
+st.pyplot(fig, use_container_width=False)
