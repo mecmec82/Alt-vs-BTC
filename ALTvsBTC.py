@@ -56,10 +56,10 @@ def plot_data(closeData, SMA1, SMA2, NumPoints):
     numAssets = len(closeData.columns)
     numRows = numAssets
 
-    fig, axes = plt.subplots(numRows, figsize=(3, 20), sharex=True)
+    fig, axes = plt.subplots(numRows, figsize=(10, numRows * 2), sharex=True)
 
-    fig.subplots_adjust(wspace=0.3, hspace=0)
-    fig.suptitle('Altcoins vs BTC')
+    fig.subplots_adjust(wspace=0.1, hspace=0.5)
+    fig.suptitle('Altcoins vs BTC', y=0.92)
 
     for index, asset in enumerate(closeData.columns):
         x = rollingAverageData1.index
@@ -79,7 +79,7 @@ def plot_data(closeData, SMA1, SMA2, NumPoints):
     fig.autofmt_xdate(rotation=90)
 
     # Displaying in Streamlit
-    st.pyplot(fig, use_container_width=False)
+    st.pyplot(fig, use_container_width=True)
 
 # Sidebar controls
 st.sidebar.header('Settings')
