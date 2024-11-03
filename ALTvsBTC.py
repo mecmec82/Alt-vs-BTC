@@ -60,20 +60,23 @@ def plot_data(closeData, SMA1, SMA2, NumPoints):
 
     # Plots
     numAssets = len(closeData.columns)
-    numRows = numAssets
+    numRows = (numAssets + 1) // 2  # Calculate number of rows needed for 2 columns
 
-    fig, axes = plt.subplots(numRows, figsize=(10, numRows * 3), sharex=True)
+    fig, axes = plt.subplots(numRows, 2, figsize=(15, numRows * 3), sharex=True)
 
-    fig.subplots_adjust(wspace=0.1, hspace=0.5)
+    fig.subplots_adjust(wspace=0.3, hspace=0.5)
     fig.suptitle('Altcoins vs BTC', y=0.92)
 
     for index, asset in enumerate(sorted_assets):
+        row = index // 2
+        col = index % 2
+
         x = rollingAverageData1.index
         y1 = rollingAverageData1[asset]
         y2 = rollingAverageData2[asset]
 
-        ax = sns.lineplot(ax=axes[index], data=rollingAverageData1, x='Date', y=asset, color="blue")
-        ax = sns.lineplot(ax=axes[index], data=rollingAverageData2, x='Date', y=asset, color="orange")
+        ax = sns.lineplot(ax=axes[row, col], data=rollingAverageData1, x='Date', y=asset, color="blue")
+        ax = sns.lineplot(ax=axes[row, col], data=rollingAverageData2, x='Date', y=asset, color="orange")
         ax.fill_between(x, y1, y2, where=(y1 > y2), color='green', alpha=0.2, interpolate=True)
         ax.fill_between(x, y1, y2, where=(y1 <= y2), color='red', alpha=0.2, interpolate=True)
 
@@ -84,14 +87,12 @@ def plot_data(closeData, SMA1, SMA2, NumPoints):
             ax.spines['left'].set_color('green')
             ax.text(1.02, 0.5, f'{increase_percentage:.2f}%', transform=ax.transAxes,
                     color='green', fontsize=12, verticalalignment='center')
-            ax.margins(x=0,y=0)
         else:
             ax.yaxis.label.set_color('red')
             ax.tick_params(axis='y', colors='red')
             ax.spines['left'].set_color('red')
             ax.text(1.02, 0.5, f'{increase_percentage:.2f}%', transform=ax.transAxes,
                     color='red', fontsize=12, verticalalignment='center')
-            ax.margins(x=0,y=0)
 
     fig.autofmt_xdate(rotation=90)
 
