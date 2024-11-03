@@ -85,7 +85,7 @@ def plot_data(closeData, SMA1, SMA2, NumPoints):
 st.sidebar.header('Settings')
 SMA1 = st.sidebar.slider('SMA1', min_value=1, max_value=50, value=10)
 SMA2 = st.sidebar.slider('SMA2', min_value=1, max_value=50, value=30)
-NumPoints = st.sidebar.slider('Number of Points', min_value=50, max_value=500, value=300)
+NumPoints = st.sidebar.slider('Number of Points', min_value=50, max_value=500, value=200)
 timeframe = st.sidebar.selectbox('Timeframe', ['1m', '5m', '15m', '30m', '1h', '2h', '4h', '1d'], index=5)
 assets = st.sidebar.multiselect('Select Assets', 
                                 ['ETH/USD', 'SOL/USD', 'SUI/USD', 'AVAX/USD', 'APT/USD', 'NEAR/USD', 'INJ/USD',
