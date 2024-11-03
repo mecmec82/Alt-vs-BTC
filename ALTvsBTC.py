@@ -8,6 +8,7 @@ import seaborn as sns
 
 @st.cache_data
 def getDataCCXT(ID, start, end):
+    st.write("getDataCCXT")
     exchange = ccxt.coinbase()
     data = exchange.fetch_ohlcv(ID, '2h')
     data = pd.DataFrame(data)
