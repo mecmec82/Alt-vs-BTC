@@ -6,106 +6,77 @@ import ccxt
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-def getDataCCXT(ID,start,end):
+def get_data_ccxt(exchange, symbol, timeframe, start, end):
+    try:
+        data = exchange.fetch_ohlcv(symbol, timeframe, since=start, limit=1000)
+        df = pd.DataFrame(data, columns=["Date", "Open", "High", "Low", "Close", "Volume"])
+        df['Date'] = pd.to_datetime(df['Date'], unit='ms')
+        df.set_index('Date', inplace=True)
+        return df
+    except Exception as e:
+        st.write(f"Failed to retrieve data for {symbol}: {e}")
+        return pd.DataFrame()
+
+def fetch_data(assets, start, end):
     exchange = ccxt.coinbase()
-    data = exchange.fetch_ohlcv (ID, '2h') 
-    data = pd.DataFrame(data)
-    #data = pd.DataFrame(reversed_data)
-    data.columns= ["Date","Open","High","Low","Close","Volume"]
-    data=data.sort_values(by=['Date'],ascending=True)
-    data['Date'] = pd.to_datetime(data['Date'],unit='ms')
-    data.set_index('Date', drop=False, inplace=True)
-    return data
+    btc_data = get_data_ccxt(exchange, "BTC/USD", '2h', start, end)['Close']
+    close_data = pd.DataFrame()
 
-st.write('fetching data...')
+    for asset in assets:
+        asset_name = asset.split("/")[0]
+        data = get_data_ccxt(exchange, asset, '2h', start, end)
+        if not data.empty:
+            close_data[asset_name] = data['Close']
+        else:
+            st.write(f"Failed to retrieve data for {asset}")
 
-data=np.nan
+    close_data = close_data.div(btc_data, axis=0)
+    return close_data
 
-##set up start and finish window
+def calculate_sma(data, window):
+    return data.rolling(window=window).mean()
+
+def plot_data(close_data, sma1, sma2, num_points):
+    close_data = close_data[-num_points:]
+    sma1_data = calculate_sma(close_data, SMA1)[-num_points:]
+    sma2_data = calculate_sma(close_data, SMA2)[-num_points:]
+
+    num_assets = len(close_data.columns)
+    fig, axes = plt.subplots(num_assets, figsize=(10, 20), sharex=True)
+    fig.subplots_adjust(wspace=0.3, hspace=0)
+    fig.suptitle('Altcoins vs BTC')
+
+    for index, asset in enumerate(close_data.columns):
+        x = sma1_data.index
+        y1 = sma1_data[asset]
+        y2 = sma2_data[asset]
+
+        ax = sns.lineplot(ax=axes[index], data=sma1_data, x='Date', y=asset, color="blue")
+        ax = sns.lineplot(ax=axes[index], data=sma2_data, x='Date', y=asset, color="orange")
+        ax.fill_between(x, y1, y2, where=(y1 > y2), color='green', alpha=0.2, interpolate=True)
+        ax.fill_between(x, y1, y2, where=(y1 <= y2), color='red', alpha=0.2, interpolate=True)
+
+        if y1.iloc[-1] > y2.iloc[-1]:
+            ax.yaxis.label.set_color('green')
+            ax.tick_params(axis='y', colors='green')
+            ax.spines['left'].set_color('green')
+
+    fig.autofmt_xdate(rotation=90)
+    st.pyplot(fig, use_container_width=False)
+
+st.write('Fetching data...')
+
 now = datetime.now()
-end= (now - timedelta(hours = 0.5))#.strftime("%Y-%m-%d %H:%M:%S")
-start= (end - timedelta(hours = 50))#.strftime("%Y-%m-%d %H:%M:%S")
-end=end.strftime("%Y-%m-%d %H:%M:%S")
-start=start.strftime("%Y-%m-%d %H:%M:%S")
+end = (now - timedelta(hours=0.5)).timestamp() * 1000
+start = (now - timedelta(hours=50)).timestamp() * 1000
 
-# set 
-SMA1=10
-SMA2=30
+SMA1 = 10
+SMA2 = 30
 NumPoints = 300
 
-# altcoin list
-#assets=['ETH/USD','SOL/USD','SUI/USD','AVAX/USD']
+assets = ['ETH/USD', 'SOL/USD', 'SUI/USD', 'AVAX/USD', 'APT/USD', 'NEAR/USD', 'INJ/USD',
+          'STX/USD', 'DOGE/USD', 'IMX/USD', 'RNDR/USD', 'FET/USD', 'SUPER/USD', 'HNT/USD',
+          'SEI/USD']
 
-assets=['ETH/USD','SOL/USD','SUI/USD','AVAX/USD','APT/USD','NEAR/USD','INJ/USD',
-        'STX/USD','DOGE/USD','IMX/USD','RNDR/USD','FET/USD','SUPER/USD','HNT/USD',
-       'SEI/USD']
-
-#get BTC data
-try:
-    btcData=getDataCCXT("BTC/USD",start,end)['Close']
-except:
-    st.write("failed to retrieve BTC data")
-
-
-#get alt data
-closeData=pd.DataFrame()
-for asset in assets:
-    assetName = str(asset).split("/")[0]
-    #st.write(assetName)
-    try:
-        closeData[assetName]=getDataCCXT(asset,start,end)['Close']
-    except:
-        st.write("failed to retrieve data for ticker: ",asset)
-
-# reference to BTC
-closeData = closeData.div(btcData, axis=0)
-
-
-# create SMA dataframe
-rollingAverageData1 = closeData.rolling(window=SMA1).mean()
-rollingAverageData2 = closeData.rolling(window=SMA2).mean()
-
-# trim to desired timeframe
-closeData = closeData[-NumPoints:]
-rollingAverageData1 = rollingAverageData1[-NumPoints:]
-rollingAverageData2 = rollingAverageData2[-NumPoints:]
-
-
-# Plots
-numAssets = len(closeData.columns)
-#numRows = round((numAssets / 2) + 0.01)
-numRows = numAssets 
-
-fig, axes = plt.subplots(numRows, figsize=(3,20), sharex=True)
-
-fig.subplots_adjust(wspace=0.3, hspace=0)
-fig.suptitle('altcoins vs BTC')
-
-for index, asset in enumerate(closeData.columns):
-
-    x = rollingAverageData1.index
-    y1 = rollingAverageData1[asset]
-    y2 = rollingAverageData2[asset]
-
-    #if index < numRows:
-    ax = sns.lineplot(ax=axes[index], data=rollingAverageData1, x='Date', y=asset, color="blue")
-    ax = sns.lineplot(ax=axes[index], data=rollingAverageData2, x='Date', y=asset, color="orange")
-    ax.fill_between(x, y1, y2, where=(y1 > y2), color='green', alpha=0.2, interpolate=True)
-    ax.fill_between(x, y1, y2, where=(y1 <= y2), color='red', alpha=0.2, interpolate=True)
-
-    if rollingAverageData1[asset][-1] > rollingAverageData2[asset][-1]:
-        ax.yaxis.label.set_color('green')          #setting up Y-axis label color to blue
-        ax.tick_params(axis='y', colors='green')  #setting up Y-axis tick color to black
-        ax.spines['left'].set_color('green')        # setting up Y-axis tick color to red
-        
-    #else:
-    #    ax1 = sns.lineplot(ax=axes[index - numRows, 1], data=closeData, x='Date', y=asset, color="blue")
-    #    ax1 = sns.lineplot(ax=axes[index - numRows, 1], data=rollingAverageData1, x='Date', y=asset, color="orange")
-    #    ax1.fill_between(x, y1, y2, where=(y1 > y2), color='green', alpha=0.2, interpolate=True)
-    #    ax1.fill_between(x, y1, y2, where=(y1 <= y2), color='red', alpha=0.2, interpolate=True)
-
-fig.autofmt_xdate(rotation=90)
-#plt.show()
-
-# Displaying in Streamlit
-st.pyplot(fig, use_container_width=False)
+close_data = fetch_data(assets, start, end)
+plot_data(close_data, SMA1, SMA2, NumPoints)
