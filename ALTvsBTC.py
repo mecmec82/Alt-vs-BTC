@@ -7,9 +7,9 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 @st.cache_data
-def getDataCCXT(ID, start, end):
+def getDataCCXT(ID, timeframe, start, end):
     exchange = ccxt.coinbase()
-    data = exchange.fetch_ohlcv(ID, '2h')
+    data = exchange.fetch_ohlcv(ID, timeframe)
     data = pd.DataFrame(data)
     data.columns = ["Date", "Open", "High", "Low", "Close", "Volume"]
     data = data.sort_values(by=['Date'], ascending=True)
@@ -17,14 +17,14 @@ def getDataCCXT(ID, start, end):
     data.set_index('Date', drop=False, inplace=True)
     return data
 
-def fetch_data():
+def fetch_data(timeframe):
     now = datetime.now()
     end = (now - timedelta(hours=0.5)).strftime("%Y-%m-%d %H:%M:%S")
     start = (now - timedelta(hours=50)).strftime("%Y-%m-%d %H:%M:%S")
 
     # Get BTC data
     try:
-        btcData = getDataCCXT("BTC/USD", start, end)['Close']
+        btcData = getDataCCXT("BTC/USD", timeframe, start, end)['Close']
     except:
         st.write("Failed to retrieve BTC data")
         return None
@@ -34,7 +34,7 @@ def fetch_data():
     for asset in st.session_state.assets:
         assetName = str(asset).split("/")[0]
         try:
-            closeData[assetName] = getDataCCXT(asset, start, end)['Close']
+            closeData[assetName] = getDataCCXT(asset, timeframe, start, end)['Close']
         except:
             st.write("Failed to retrieve data for ticker: ", asset)
 
@@ -86,6 +86,7 @@ st.sidebar.header('Settings')
 SMA1 = st.sidebar.slider('SMA1', min_value=1, max_value=50, value=10)
 SMA2 = st.sidebar.slider('SMA2', min_value=1, max_value=50, value=30)
 NumPoints = st.sidebar.slider('Number of Points', min_value=50, max_value=500, value=300)
+timeframe = st.sidebar.selectbox('Timeframe', ['1m', '5m', '15m', '30m', '1h', '2h', '4h', '1d'], index=5)
 assets = st.sidebar.multiselect('Select Assets', 
                                 ['ETH/USD', 'SOL/USD', 'SUI/USD', 'AVAX/USD', 'APT/USD', 'NEAR/USD', 'INJ/USD',
                                  'STX/USD', 'DOGE/USD', 'IMX/USD', 'RNDR/USD', 'FET/USD', 'SUPER/USD', 'HNT/USD',
@@ -96,7 +97,7 @@ if 'assets' not in st.session_state:
     st.session_state.assets = assets
 
 if st.sidebar.button('Fetch Data'):
-    st.session_state.closeData = fetch_data()
+    st.session_state.closeData = fetch_data(timeframe)
 
 if 'closeData' in st.session_state:
     plot_data(st.session_state.closeData, SMA1, SMA2, NumPoints)
