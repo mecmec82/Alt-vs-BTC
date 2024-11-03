@@ -64,8 +64,8 @@ def plot_data(closeData, SMA1, SMA2, NumPoints):
 
     fig, axes = plt.subplots(numRows, 2, figsize=(10, numRows * 4), sharex=True)
 
-    fig.subplots_adjust(wspace=0.2, hspace=1)
-    fig.suptitle('Altcoins vs BTC', y=0.92)
+    fig.subplots_adjust(left=0, bottom=0.1, right=0.1, top=0)
+    fig.suptitle('Altcoins vs BTC', y=0.1)
 
     for index, asset in enumerate(sorted_assets):
         row = index // 2
