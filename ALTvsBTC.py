@@ -62,9 +62,10 @@ def plot_data(closeData, SMA1, SMA2, NumPoints):
     numAssets = len(closeData.columns)
     numRows = (numAssets + 1) // 2  # Calculate number of rows needed for 2 columns
 
-    fig, axes = plt.subplots(numRows, 2, figsize=(10, numRows * 4), sharex=True)
+    fig, axes = plt.subplots(numRows, 2, figsize=(10, numRows * 4), sharex=True, layout="constrained")
 
-    fig.subplots_adjust(left=0, bottom=0, right=0.1, top=0.1)
+    #fig.subplots_adjust(left=0, bottom=0, right=0.1, top=0.1)
+    #fig.subplots(layout="constrained")
     fig.suptitle('Altcoins vs BTC', y=0.1)
 
     for index, asset in enumerate(sorted_assets):
