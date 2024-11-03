@@ -84,12 +84,14 @@ def plot_data(closeData, SMA1, SMA2, NumPoints):
             ax.spines['left'].set_color('green')
             ax.text(1.02, 0.5, f'{increase_percentage:.2f}%', transform=ax.transAxes,
                     color='green', fontsize=12, verticalalignment='center')
+            ax.margins(x=0,y=0)
         else:
             ax.yaxis.label.set_color('red')
             ax.tick_params(axis='y', colors='red')
             ax.spines['left'].set_color('red')
             ax.text(1.02, 0.5, f'{increase_percentage:.2f}%', transform=ax.transAxes,
                     color='red', fontsize=12, verticalalignment='center')
+            ax.margins(x=0,y=0)
 
     fig.autofmt_xdate(rotation=90)
 
