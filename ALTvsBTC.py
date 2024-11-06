@@ -38,7 +38,7 @@ def fetch_data(timeframe):
     st.write(percentage_per_asset)
     closeData = pd.DataFrame()
     for asset in st.session_state.assets:
-        my_bar.progress(percent_complete + percentage_per_asset, text="Getting "+asset)
+        my_bar.progress(percent_complete + percentage_per_asset, text="Getting Data")
         assetName = str(asset).split("/")[0]
         try:
             closeData[assetName] = getDataCCXT(asset, timeframe, start, end)['Close']
