@@ -34,7 +34,7 @@ def fetch_data(timeframe):
     progress_text = "Fetching data. Please wait."
     my_bar = st.progress(0, text=progress_text)
     percent_complete = 0
-    percentage_per_asset = 100/len(st.session_state.assets)
+    percentage_per_asset = int(100/len(st.session_state.assets))
     st.write(percentage_per_asset)
     closeData = pd.DataFrame()
     for asset in st.session_state.assets:
