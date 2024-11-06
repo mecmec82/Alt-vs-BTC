@@ -17,7 +17,8 @@ def getDataCCXT(ID, timeframe, start, end):
     data.set_index('Date', drop=False, inplace=True)
     return data
 
-def fetch_data(timeframe):
+def fetch_data(timeframe):   
+    
     now = datetime.now()
     end = (now - timedelta(hours=0.5)).strftime("%Y-%m-%d %H:%M:%S")
     start = (now - timedelta(hours=50)).strftime("%Y-%m-%d %H:%M:%S")
@@ -30,8 +31,13 @@ def fetch_data(timeframe):
         return None
 
     # Get alt data
+    progress_text = "Fetching data. Please wait."
+    my_bar = st.progress(0, text=progress_text)
+    percent_complete = 0
+    percentage_per_asset = 100/len(st.session_state.assets)
     closeData = pd.DataFrame()
     for asset in st.session_state.assets:
+        my_bar.progress(percent_complete + percentage_per_asset, text="Getting "+asset)
         assetName = str(asset).split("/")[0]
         try:
             closeData[assetName] = getDataCCXT(asset, timeframe, start, end)['Close']
@@ -40,6 +46,9 @@ def fetch_data(timeframe):
 
     # Reference to BTC
     closeData = closeData.div(btcData, axis=0)
+
+    my_bar.empty()
+    
     return closeData
 
 def plot_data(closeData, SMA1, SMA2, NumPoints):
