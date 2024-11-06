@@ -35,6 +35,7 @@ def fetch_data(timeframe):
     my_bar = st.progress(0, text=progress_text)
     percent_complete = 0
     percentage_per_asset = 100/len(st.session_state.assets)
+    st.write(percentage_per_asset)
     closeData = pd.DataFrame()
     for asset in st.session_state.assets:
         my_bar.progress(percent_complete + percentage_per_asset, text="Getting "+asset)
