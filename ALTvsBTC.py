@@ -119,10 +119,10 @@ timeframe = st.sidebar.selectbox('Timeframe', ['1m', '5m', '15m', '30m', '1h', '
 assets = st.sidebar.multiselect('Select Assets', 
                                 ['ETH/USD', 'SOL/USD', 'SUI/USD', 'AVAX/USD', 'APT/USD', 'NEAR/USD', 'INJ/USD',
                                  'STX/USD', 'DOGE/USD', 'IMX/USD', 'RNDR/USD', 'FET/USD', 'SUPER/USD', 'HNT/USD',
-                                 'SEI/USD'], 
+                                 'SEI/USD', 'DOT/USD', 'ADA/USD', 'XRP/USD'], 
                                 default=['ETH/USD', 'SOL/USD', 'SUI/USD', 'AVAX/USD', 'APT/USD', 'NEAR/USD', 'INJ/USD',
-                                 'STX/USD', 'DOGE/USD', 'IMX/USD', 'RNDR/USD', 'FET/USD', 'SUPER/USD', 'HNT/USD',
-                                 'SEI/USD'])
+                                 'ADA/USD', 'DOGE/USD', 'XRP/USD', 'RNDR/USD', 'FET/USD', 'SUPER/USD', 'HNT/USD',
+                                 'DOT/USD'])
 
 if 'assets' not in st.session_state:
     st.session_state.assets = assets
